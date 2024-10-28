@@ -1,8 +1,9 @@
 package com.TaskManagement.TaskManagementApp.controller;
 
 import com.TaskManagement.TaskManagementApp.dto.CreateUserDTO;
+import com.TaskManagement.TaskManagementApp.exception.EmailAlreadyRegisteredException;
 import com.TaskManagement.TaskManagementApp.service.UserService;
-import com.TaskManagement.TaskManagementApp.utils.IdGeneratorService;
+import com.TaskManagement.TaskManagementApp.utils.ErrorResponseService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 @RestController
 @RequestMapping(path = "api/v1/user")
 public class UserController {
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService userService) {
@@ -22,9 +23,9 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createANewUser(@RequestBody @Valid CreateUserDTO user, BindingResult result) {
+    public ResponseEntity<Object> createANewUser(@RequestBody @Valid CreateUserDTO user, BindingResult result) throws EmailAlreadyRegisteredException {
         if(result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors());
+            return ResponseEntity.badRequest().body(ErrorResponseService.GenerateErrorResponse(result));
         }
 
         return this.userService.createANewUser(user);

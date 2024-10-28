@@ -2,21 +2,23 @@ package com.TaskManagement.TaskManagementApp.service;
 
 import com.TaskManagement.TaskManagementApp.dto.CreateUserDTO;
 import com.TaskManagement.TaskManagementApp.entity.User;
+import com.TaskManagement.TaskManagementApp.exception.EmailAlreadyRegisteredException;
+import com.TaskManagement.TaskManagementApp.exception.ExceptionDetails;
 import com.TaskManagement.TaskManagementApp.repository.UserRepository;
 import com.TaskManagement.TaskManagementApp.utils.IdGeneratorService;
 import com.TaskManagement.TaskManagementApp.utils.IdTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Optional;
 
 @Service
 public class UserService {
-    private UserRepository userRepository;
-    private IdGeneratorService idGeneratorService;
+    private final UserRepository userRepository;
+    private final IdGeneratorService idGeneratorService;
 
     @Autowired
     public UserService(UserRepository userRepository, IdGeneratorService idGeneratorService) {
@@ -24,14 +26,12 @@ public class UserService {
         this.idGeneratorService = idGeneratorService;
     }
 
-    public ResponseEntity<Object> createANewUser(CreateUserDTO user) {
+    public ResponseEntity<Object> createANewUser(CreateUserDTO user) throws EmailAlreadyRegisteredException {
         Optional<User> existingEmail = this.userRepository.findByEmail(user.getEmail());
-        HashMap<String, Object> response = new HashMap<>();
 
         if(existingEmail.isPresent()) {
-            response.put("error", "The entered email address is already registered");
-
-            return ResponseEntity.badRequest().body(response);
+            throw new EmailAlreadyRegisteredException("An attempt has been made to register an email which already exists in the database",
+                    new ExceptionDetails(HttpStatus.BAD_REQUEST.value(), "The entered email address is already registered"));
         }
 
         User newUser = new User.builder()
