@@ -8,11 +8,13 @@ import com.TaskManagement.TaskManagementApp.repository.UserRepository;
 import com.TaskManagement.TaskManagementApp.utils.IdGeneratorService;
 import com.TaskManagement.TaskManagementApp.utils.IdTypes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,7 +28,7 @@ public class UserService {
         this.idGeneratorService = idGeneratorService;
     }
 
-    public ResponseEntity<Object> createANewUser(CreateUserDTO user) throws EmailAlreadyRegisteredException {
+    public User createANewUser(CreateUserDTO user) throws EmailAlreadyRegisteredException {
         Optional<User> existingEmail = this.userRepository.findByEmail(user.getEmail());
 
         if(existingEmail.isPresent()) {
@@ -41,12 +43,12 @@ public class UserService {
                 .email(user.getEmail())
                 .build();
 
-        return ResponseEntity.ok(this.userRepository.save(newUser));
+        return this.userRepository.save(newUser);
     }
 
-    public ResponseEntity<Object> retrieveAllUsers(int page, int perPage) {
+    public Page<User> retrieveAllUsers(int page, int perPage) {
         PageRequest paging = PageRequest.of(page -1, perPage);
 
-        return ResponseEntity.ok(this.userRepository.findAll(paging));
+        return this.userRepository.findAll(paging);
     }
 }
