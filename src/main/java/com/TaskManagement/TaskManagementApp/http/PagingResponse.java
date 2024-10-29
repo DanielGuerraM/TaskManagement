@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class PagingResponse<T> {
-    private List<T> data;
+public class PagingResponse {
+    private List<?> data;
     private Paging paging;
 }

@@ -4,6 +4,7 @@ import com.TaskManagement.TaskManagementApp.dto.CreateUserDTO;
 import com.TaskManagement.TaskManagementApp.entity.User;
 import com.TaskManagement.TaskManagementApp.exception.EmailAlreadyRegisteredException;
 import com.TaskManagement.TaskManagementApp.exception.ExceptionDetails;
+import com.TaskManagement.TaskManagementApp.exception.UserNotFoundException;
 import com.TaskManagement.TaskManagementApp.repository.UserRepository;
 import com.TaskManagement.TaskManagementApp.utils.IdGeneratorService;
 import com.TaskManagement.TaskManagementApp.utils.IdTypes;
@@ -50,5 +51,14 @@ public class UserService {
         PageRequest paging = PageRequest.of(page -1, perPage);
 
         return this.userRepository.findAll(paging);
+    }
+
+    public User retrieveASingleUser(long id) throws UserNotFoundException {
+        User existingUser = this.userRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException("An attempt was made to search for a user by an id that is not registered in the database",
+                        new ExceptionDetails(HttpStatus.NOT_FOUND.value(), "The user you are trying to find does not exist"))
+        );
+
+        return existingUser;
     }
 }

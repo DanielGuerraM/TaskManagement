@@ -3,6 +3,7 @@ package com.TaskManagement.TaskManagementApp.controller;
 import com.TaskManagement.TaskManagementApp.dto.CreateUserDTO;
 import com.TaskManagement.TaskManagementApp.entity.User;
 import com.TaskManagement.TaskManagementApp.exception.EmailAlreadyRegisteredException;
+import com.TaskManagement.TaskManagementApp.exception.UserNotFoundException;
 import com.TaskManagement.TaskManagementApp.http.Paging;
 import com.TaskManagement.TaskManagementApp.http.PagingResponse;
 import com.TaskManagement.TaskManagementApp.service.UserService;
@@ -15,7 +16,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "api/v1/user")
@@ -61,5 +61,10 @@ public class UserController {
         response.setPaging(paging);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(path = "{userId}")
+    public ResponseEntity<Object> retrieveASingleUser(@PathVariable("userId") String userId) throws UserNotFoundException {
+        return ResponseEntity.ok(this.userService.retrieveASingleUser(Long.parseLong(userId)));
     }
 }
