@@ -4,14 +4,18 @@ import com.TaskManagement.TaskManagementApp.dto.CreateUserDTO;
 import com.TaskManagement.TaskManagementApp.dto.UpdateUserDTO;
 import com.TaskManagement.TaskManagementApp.entity.User;
 import com.TaskManagement.TaskManagementApp.exception.EmailAlreadyRegisteredException;
+import com.TaskManagement.TaskManagementApp.exception.ExceptionDetails;
+import com.TaskManagement.TaskManagementApp.exception.InvalidPagingException;
 import com.TaskManagement.TaskManagementApp.exception.UserNotFoundException;
 import com.TaskManagement.TaskManagementApp.http.Paging;
 import com.TaskManagement.TaskManagementApp.http.PagingResponse;
 import com.TaskManagement.TaskManagementApp.service.UserService;
 import com.TaskManagement.TaskManagementApp.utils.ErrorResponseService;
+import com.TaskManagement.TaskManagementApp.utils.PagingValidationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +26,12 @@ import java.util.HashMap;
 @RequestMapping(path = "api/v1/user")
 public class UserController {
     private final UserService userService;
+    private final PagingValidationService pagingValidationService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, PagingValidationService pagingValidationService) {
         this.userService = userService;
+        this.pagingValidationService = pagingValidationService;
     }
 
     @PostMapping
@@ -38,16 +44,11 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> retrieveAllUsers(@RequestParam(name = "page", defaultValue = "1") String page, @RequestParam(name = "per_page", defaultValue = "50") String perPage) {
+    public ResponseEntity<Object> retrieveAllUsers(@RequestParam(name = "page", defaultValue = "1") String page, @RequestParam(name = "per_page", defaultValue = "50") String perPage) throws InvalidPagingException {
         int finalPage = Integer.parseInt(page);
         int finalPerPage = Integer.parseInt(perPage);
 
-        if(finalPage < 1 || finalPerPage < 1 || finalPerPage > 50) {
-            HashMap<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "The page cannot be 0 and the number of records per page cannot be less than 1 or more than 50.");
-
-            return ResponseEntity.badRequest().body(errorResponse);
-        }
+        pagingValidationService.ValidatePagingParams(page, perPage);
 
         Page<User> users = this.userService.retrieveAllUsers(finalPage, finalPerPage);
 
