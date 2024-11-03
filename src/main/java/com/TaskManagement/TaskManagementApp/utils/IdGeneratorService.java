@@ -17,7 +17,9 @@ public class IdGeneratorService {
 
         int secuentialNumber = 1000 + random.nextInt(90000);
 
-        return Long.parseLong(dateFormated + secuentialNumber + setType(type));
+        String formattedSequentialNumber = String.format("%05d", secuentialNumber);
+
+        return Long.parseLong(dateFormated + formattedSequentialNumber + setType(type));
     }
 
     private String setType(IdTypes type) {
