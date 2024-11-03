@@ -1,6 +1,7 @@
 package com.TaskManagement.TaskManagementApp.controller;
 
 import com.TaskManagement.TaskManagementApp.dto.CreateUserDTO;
+import com.TaskManagement.TaskManagementApp.dto.UpdateUserDTO;
 import com.TaskManagement.TaskManagementApp.entity.User;
 import com.TaskManagement.TaskManagementApp.exception.EmailAlreadyRegisteredException;
 import com.TaskManagement.TaskManagementApp.exception.UserNotFoundException;
@@ -64,7 +65,12 @@ public class UserController {
     }
 
     @GetMapping(path = "{userId}")
-    public ResponseEntity<Object> retrieveASingleUser(@PathVariable("userId") String userId) throws UserNotFoundException {
+    public ResponseEntity<User> retrieveASingleUser(@PathVariable("userId") String userId) throws UserNotFoundException {
         return ResponseEntity.ok(this.userService.retrieveASingleUser(Long.parseLong(userId)));
+    }
+
+    @PatchMapping(path = "{userId}")
+    public ResponseEntity<Object> updateAUser(@PathVariable("userId") String userId, @RequestBody UpdateUserDTO user) throws UserNotFoundException {
+        return ResponseEntity.ok(this.userService.updateUser(Long.parseLong(userId), user));
     }
 }

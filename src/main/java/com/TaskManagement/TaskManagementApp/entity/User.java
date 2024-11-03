@@ -1,10 +1,15 @@
 package com.TaskManagement.TaskManagementApp.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "\"user\"")
 public class User {
@@ -12,19 +17,21 @@ public class User {
     private long id;
     @Column(length = 50)
     private String name;
-    @Column(length = 50)
-    private String last_name;
+    @Column(length = 50, name = "last_name")
+    private String lastName;
     @Column(length = 250)
     private String email;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Task> tasks;
 
     public static class builder {
         private long id;
         private String name;
-        private String last_name;
+        private String lastName;
         private String email;
 
         public builder id(long id) {
@@ -37,8 +44,8 @@ public class User {
             return this;
         }
 
-        public builder last_name(String last_name) {
-            this.last_name = last_name;
+        public builder lastName(String lastName) {
+            this.lastName = lastName;
             return this;
         }
 
@@ -54,68 +61,45 @@ public class User {
 
     public User() { }
 
-    public User(builder builder) {
+    private User(builder builder) {
         this.id = builder.id;
         this.name = builder.name;
-        this.last_name = builder.last_name;
+        this.lastName = builder.lastName;
         this.email = builder.email;
     }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLast_name() {
-        return last_name;
-    }
-
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public LocalDateTime getCreated_at() {
-        return created_at;
-    }
-
     @PrePersist
-    public void setCreated_at() {
-        this.created_at = LocalDateTime.now();
-    }
-
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
+    public void setCreatedAt() {
+        this.createdAt = LocalDateTime.now();
     }
 
     @PreUpdate
-    public void setUpdated_at() {
-        this.updated_at = LocalDateTime.now();
+    public void setUpdatedAt() {
+        this.updatedAt = LocalDateTime.now();
     }
 
-    public List<Task> getTasks() {
-        return tasks;
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", tasks=" + tasks +
+                '}';
     }
 
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id && Objects.equals(name, user.name) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(createdAt, user.createdAt) && Objects.equals(updatedAt, user.updatedAt) && Objects.equals(tasks, user.tasks);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, lastName, email, createdAt, updatedAt, tasks);
     }
 }

@@ -18,6 +18,7 @@ public class Category {
 
     public static class builder {
         private long id;
+        @Column(length = 50)
         private String name;
 
         public builder id(long id) {
@@ -79,7 +80,7 @@ public class Category {
 
     public Category() { }
 
-    public Category(builder builder) {
+    private Category(builder builder) {
         this.id = builder.id;
         this.name = builder.name;
     }

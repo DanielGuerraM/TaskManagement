@@ -1,9 +1,13 @@
 package com.TaskManagement.TaskManagementApp.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "task")
 public class Task {
@@ -23,9 +27,12 @@ public class Task {
 
     public static class builder {
         private long id;
+        @Column(length = 50)
         private String title;
+        @Column(length = 250)
         private String description;
-        private boolean is_completed;
+        @Column(name = "is_completed")
+        private boolean isCompleted;
 
         public builder id(long id) {
             this.id = id;
@@ -43,7 +50,7 @@ public class Task {
         }
 
         public builder isCompleted(boolean isCompleted) {
-            this.is_completed = isCompleted;
+            this.isCompleted = isCompleted;
             return this;
         }
 
@@ -52,78 +59,21 @@ public class Task {
         }
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public boolean isIs_completed() {
-        return is_completed;
-    }
-
-    public void setIs_completed(boolean is_completed) {
-        this.is_completed = is_completed;
-    }
-
-    public LocalDateTime getCreated_at() {
-        return created_at;
-    }
-
     @PrePersist
     public void setCreated_at() {
         this.created_at = LocalDateTime.now();
-    }
-
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
     }
 
     @PreUpdate
     public void setUpdated_at() {
         this.updated_at = LocalDateTime.now();
     }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public Task() { }
 
-    public Task(builder builder) {
+    private Task(builder builder) {
         this.id = builder.id;
         this.title = builder.title;
         this.description = builder.description;
-        this.is_completed = builder.is_completed;
+        this.is_completed = builder.isCompleted;
     }
 }
