@@ -1,15 +1,19 @@
 package com.TaskManagement.TaskManagementApp.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 @Entity
 @Table
 public class Category {
     @Id
     private long id;
-    @Column(length = 50)
+    @Column(length = 50, unique = true)
     private String name;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
@@ -36,46 +40,14 @@ public class Category {
         }
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public LocalDateTime getCreated_at() {
-        return created_at;
-    }
-
     @PrePersist
     public void setCreated_at() {
         this.created_at = LocalDateTime.now();
     }
 
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
-    }
-
     @PreUpdate
     public void setUpdated_at() {
         this.updated_at = LocalDateTime.now();
-    }
-
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
     }
 
     public Category() { }
