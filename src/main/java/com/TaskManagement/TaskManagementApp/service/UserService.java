@@ -71,6 +71,15 @@ public class UserService {
         return this.userRepository.save(update(user, existingUser));
     }
 
+    public void deleteUser(long userId) throws UserNotFoundException {
+        this.userRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException("An attempt was made to search for a user by an id that is not registered in the database",
+                            new ExceptionDetails(HttpStatus.NOT_FOUND.value(), "The user you are trying to delete does not exist"))
+        );
+
+        this.userRepository.deleteById(userId);
+    }
+
     private User update(UpdateUserDTO source, User target) {
         if(source.getName() != null) {
             target.setName(source.getName());

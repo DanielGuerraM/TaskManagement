@@ -73,4 +73,11 @@ public class UserController {
     public ResponseEntity<Object> updateAUser(@PathVariable("userId") String userId, @RequestBody UpdateUserDTO user) throws UserNotFoundException {
         return ResponseEntity.ok(this.userService.updateUser(Long.parseLong(userId), user));
     }
+
+    @DeleteMapping(path = "{userId}")
+    public ResponseEntity<Object> deleteAnUser(@PathVariable("userId") String userId) throws UserNotFoundException {
+        this.userService.deleteUser(Long.parseLong(userId));
+
+        return ResponseEntity.noContent().build();
+    }
 }
