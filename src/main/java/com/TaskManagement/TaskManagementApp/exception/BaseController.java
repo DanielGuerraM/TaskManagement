@@ -19,6 +19,12 @@ public class BaseController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getDetails());
     }
 
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<ExceptionDetails> handleCategoryNotFoundException(CategoryNotFoundException e) {
+        LOG.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getDetails());
+    }
+
     //Bad request
     @ExceptionHandler(EmailAlreadyRegisteredException.class)
     public ResponseEntity<ExceptionDetails> handleEmailAlreadyRegisteredException(EmailAlreadyRegisteredException e) {
@@ -28,6 +34,12 @@ public class BaseController {
 
     @ExceptionHandler(CategoryAlreadyRegisteredException.class)
     public ResponseEntity<ExceptionDetails> handleCategoryAlreadyRegisteredException(CategoryAlreadyRegisteredException e) {
+        LOG.error(e.getMessage(), e);
+        return ResponseEntity.badRequest().body(e.getDetails());
+    }
+
+    @ExceptionHandler(InvalidPagingException.class)
+    public ResponseEntity<ExceptionDetails> handleInvalidPagingException(InvalidPagingException e) {
         LOG.error(e.getMessage(), e);
         return ResponseEntity.badRequest().body(e.getDetails());
     }
