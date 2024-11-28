@@ -1,6 +1,7 @@
 package com.TaskManagement.TaskManagementApp.controller;
 
 import com.TaskManagement.TaskManagementApp.dto.CreateCategoryDTO;
+import com.TaskManagement.TaskManagementApp.dto.UpdateCategoryDTO;
 import com.TaskManagement.TaskManagementApp.entity.Category;
 import com.TaskManagement.TaskManagementApp.exception.CategoryAlreadyRegisteredException;
 import com.TaskManagement.TaskManagementApp.exception.CategoryNotFoundException;
@@ -60,5 +61,17 @@ public class CategoryController {
     @GetMapping(path = "{categoryId}")
     public ResponseEntity<Object> retrieveASingleCategory(@PathVariable("categoryId") String categoryId) throws CategoryNotFoundException {
         return ResponseEntity.ok(this.categoryService.retrieveASingleCategory(Long.parseLong(categoryId)));
+    }
+
+    @PatchMapping(path = "{categoryId}")
+    public ResponseEntity<Object> updateCategory(@PathVariable("categoryId") String categoryId, @RequestBody UpdateCategoryDTO category) throws CategoryNotFoundException {
+        return ResponseEntity.ok(this.categoryService.updateCategory(Long.parseLong(categoryId), category));
+    }
+
+    @DeleteMapping(path = "{categoryId}")
+    public ResponseEntity<Object> deleteCategory(@PathVariable("categoryId") String categoryId) throws CategoryNotFoundException {
+        this.categoryService.deleteCategory(Long.parseLong(categoryId));
+
+        return ResponseEntity.noContent().build();
     }
 }

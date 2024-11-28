@@ -1,6 +1,8 @@
 package com.TaskManagement.TaskManagementApp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +19,7 @@ public class Category {
     private String name;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
+    @JsonIgnore
     @OneToOne(mappedBy = "category", cascade = CascadeType.ALL)
     private Task task;
 

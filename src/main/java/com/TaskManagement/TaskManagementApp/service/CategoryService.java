@@ -1,6 +1,7 @@
 package com.TaskManagement.TaskManagementApp.service;
 
 import com.TaskManagement.TaskManagementApp.dto.CreateCategoryDTO;
+import com.TaskManagement.TaskManagementApp.dto.UpdateCategoryDTO;
 import com.TaskManagement.TaskManagementApp.entity.Category;
 import com.TaskManagement.TaskManagementApp.exception.CategoryAlreadyRegisteredException;
 import com.TaskManagement.TaskManagementApp.exception.CategoryNotFoundException;
@@ -55,5 +56,27 @@ public class CategoryService {
                 () -> new CategoryNotFoundException("You are trying to search for a category that does not exist in the database",
                         new ExceptionDetails(HttpStatus.NOT_FOUND.value(), "The category you are trying to find does not exist"))
         );
+    }
+
+    public Category updateCategory(long id, UpdateCategoryDTO category) throws CategoryNotFoundException {
+        Category existingCategory = this.categoryRepository.findById(id).orElseThrow(
+                () -> new CategoryNotFoundException("You are trying to search for a category that does not exist in the database",
+                        new ExceptionDetails(HttpStatus.NOT_FOUND.value(), "The category you are trying to find does not exist"))
+        );
+
+        if(category.getName() != null) {
+            existingCategory.setName(category.getName());
+        }
+
+        return this.categoryRepository.save(existingCategory);
+    }
+
+    public void deleteCategory(long id) throws CategoryNotFoundException {
+        this.categoryRepository.findById(id).orElseThrow(
+                () -> new CategoryNotFoundException("You are trying to search for a category that does not exist in the database",
+                        new ExceptionDetails(HttpStatus.NOT_FOUND.value(), "The category you are trying to find does not exist"))
+        );
+
+        this.categoryRepository.deleteById(id);
     }
 }

@@ -1,6 +1,8 @@
 package com.TaskManagement.TaskManagementApp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,22 +18,27 @@ public class Task {
     private String title;
     private String description;
     private boolean is_completed;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+    @NotNull
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "category_id")
     private Category category;
+    @NotNull
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     public static class builder {
         private long id;
-        @Column(length = 50)
         private String title;
-        @Column(length = 250)
         private String description;
-        @Column(name = "is_completed")
+        private User user;
+        private Category category;
         private boolean isCompleted;
 
         public builder id(long id) {
@@ -49,6 +56,16 @@ public class Task {
             return this;
         }
 
+        public builder user(User user) {
+            this.user = user;
+            return this;
+        }
+
+        public builder category(Category category) {
+            this.category = category;
+            return this;
+        }
+
         public builder isCompleted(boolean isCompleted) {
             this.isCompleted = isCompleted;
             return this;
@@ -61,12 +78,12 @@ public class Task {
 
     @PrePersist
     public void setCreated_at() {
-        this.created_at = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 
     @PreUpdate
     public void setUpdated_at() {
-        this.updated_at = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
     public Task() { }
 
@@ -74,6 +91,8 @@ public class Task {
         this.id = builder.id;
         this.title = builder.title;
         this.description = builder.description;
+        this.user = builder.user;
+        this.category = builder.category;
         this.is_completed = builder.isCompleted;
     }
 }

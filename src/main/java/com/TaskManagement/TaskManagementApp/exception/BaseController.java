@@ -25,6 +25,12 @@ public class BaseController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getDetails());
     }
 
+    @ExceptionHandler(TaskNotFoundException.class)
+    public ResponseEntity<ExceptionDetails> handleTaskNotFoundException(TaskNotFoundException e) {
+        LOG.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getDetails());
+    }
+
     //Bad request
     @ExceptionHandler(EmailAlreadyRegisteredException.class)
     public ResponseEntity<ExceptionDetails> handleEmailAlreadyRegisteredException(EmailAlreadyRegisteredException e) {
